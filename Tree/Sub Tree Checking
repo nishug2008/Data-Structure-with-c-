@@ -1,0 +1,139 @@
+#include <stdio.h>
+#include <stdlib.h>
+typedef struct tree
+{
+    int data;
+    struct tree *left;
+    struct tree *right;
+} node;
+
+node *root, *temp,*ttemp;
+node *createNode(int data)
+{
+    node *newnode = ((node *)malloc(sizeof(node)));
+    newnode->data = data;
+    newnode->left = NULL;
+    newnode->right = NULL;
+    return newnode;
+}
+
+int isSame(node *mainTree, node *subtree)
+{
+    if (mainTree == NULL && subtree == NULL)
+        return 1;
+    if (mainTree == NULL || subtree == NULL)
+        return 0;
+    if (mainTree->data == subtree->data)
+    {
+        return isSame(mainTree->left, subtree->left) && isSame(mainTree->right, subtree->right);
+    }
+    return 0;
+}
+
+int isSubtree(node *mainTree, node *subTree)
+{
+    if (subTree == NULL)
+        return 1;
+    if (mainTree == NULL)
+        return 0;
+    if (mainTree->data == subTree->data)
+    {
+        return isSame(mainTree, subTree);
+    }
+    return isSubtree(mainTree->left, subTree) || isSubtree(mainTree->right, subTree);
+}
+
+typedef struct QueueNode
+{
+    node* data;
+    struct QueueNode *next;
+}node1;
+
+node1 *first =NULL;
+node1 *last =NULL;
+
+void enqueue(node *currNode)
+{
+    node1 *newNode=((node1*)malloc(sizeof(node1)));
+    if(newNode!=NULL)
+    {
+        newNode->data=currNode;
+        newNode->next=NULL;
+        if(first==NULL)
+        first=newNode;
+        else last->next=newNode;
+        last=newNode;
+
+    }
+}
+
+node * dequeue()
+{
+    if(first!=NULL)
+    {
+       node1* toFree=first;
+       node* toReturn = toFree->data;
+       first=first->next;
+       free(toFree);
+       return toReturn;
+    }
+    return NULL;
+}
+
+void display_IN(node *p)
+{
+    if (p != NULL)
+    {
+        display_IN(p->left);
+        printf("%d ", p->data);
+        display_IN(p->right);
+    }
+}
+
+void traversal(node* currNode)
+{
+   // printf("Hi\n");
+    enqueue(currNode);
+    while(first!=NULL){
+        currNode=dequeue();
+         //printf("Hello\n");
+        printf("%d ",currNode->data);
+        if(currNode->left!=NULL) enqueue(currNode->left);
+        if(currNode->right!=NULL) enqueue(currNode->right);
+    }
+}
+int main()
+{
+    int data;
+    // scanf("%d",&data);
+    root = createNode(10);
+
+    // scanf("%d",&data);s
+    root->left = createNode(20);
+    // scanf("%d",&data);
+    root->right = createNode(30);
+    // scanf("%d",&data);
+    root->left->right = createNode(40);
+    //  scanf("%d",&data);
+    root->right->left = createNode(50);
+    //  scanf("%d",&data);
+    root->left->left = createNode(60);
+    printf("Preorder Traversal is:\n");
+    display_IN(root);
+
+    printf("Subtree\n");
+    temp = createNode(10);
+    temp->left = createNode(20);
+    temp->left->right = createNode(40);
+    display_IN(temp);
+    isSubtree(root,temp)?printf("\nTrue\n"):printf("\nFalse\n");
+
+  printf("Subtree\n");
+    ttemp = createNode(20);
+    ttemp->left = createNode(60);
+    ttemp->right = createNode(40);
+    display_IN(ttemp);
+    isSubtree(root,ttemp)?printf("\nTrue\n"):printf("\nFalse\n");
+    traversal(root);
+    return 0;
+}
