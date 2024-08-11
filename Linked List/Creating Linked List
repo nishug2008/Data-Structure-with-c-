@@ -1,0 +1,53 @@
+#include<iostream>
+#include<stdlib.h>
+//global variable
+
+typedef struct linked_list
+{
+    int data;
+    struct linked_list *next;
+
+}node;
+//global variable
+node *first ,*temp,*ttemp,*p;
+
+void create_first(int value)
+{
+    first = (node*)malloc(sizeof (node));
+    first->data = value;
+    first->next=NULL;
+}
+void add_nodes(int value)
+{
+    temp=first;
+    while(temp->next!=NULL)
+    {
+        temp = temp->next;
+    }
+
+    ttemp=(node*)malloc(sizeof (node));
+    ttemp->data=value ;
+    ttemp->next=NULL;
+    temp->next=ttemp;
+
+}
+
+void display()
+{
+    temp=first;
+    while(temp!=NULL)
+    {
+        cout<<temp->data;
+        temp=temp->next;
+    }
+}
+
+int main()
+{
+    create_first(10);
+    add_nodes(20);
+    add_nodes(30);
+    add_nodes(40);
+    display();
+    return 0;
+}
