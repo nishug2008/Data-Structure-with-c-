@@ -1,4 +1,4 @@
-#include <stdio.h>
+#include <iostream>
 #include <stdlib.h>
 typedef struct tree
 {
@@ -85,19 +85,17 @@ void display_IN(node *p)
     if (p != NULL)
     {
         display_IN(p->left);
-        printf("%d ", p->data);
+        cout<<p->data;
         display_IN(p->right);
     }
 }
 
 void traversal(node* currNode)
 {
-   // printf("Hi\n");
     enqueue(currNode);
     while(first!=NULL){
         currNode=dequeue();
-         //printf("Hello\n");
-        printf("%d ",currNode->data);
+        cin>>currNode->data);
         if(currNode->left!=NULL) enqueue(currNode->left);
         if(currNode->right!=NULL) enqueue(currNode->right);
     }
@@ -105,18 +103,11 @@ void traversal(node* currNode)
 int main()
 {
     int data;
-    // scanf("%d",&data);
     root = createNode(10);
-
-    // scanf("%d",&data);s
     root->left = createNode(20);
-    // scanf("%d",&data);
     root->right = createNode(30);
-    // scanf("%d",&data);
     root->left->right = createNode(40);
-    //  scanf("%d",&data);
     root->right->left = createNode(50);
-    //  scanf("%d",&data);
     root->left->left = createNode(60);
     printf("Preorder Traversal is:\n");
     display_IN(root);
