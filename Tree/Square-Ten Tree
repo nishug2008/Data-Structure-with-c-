@@ -1,0 +1,96 @@
+#include <cmath>
+#include <cstdio>
+#include <vector>
+#include <iostream>
+#include <algorithm>
+#include <iomanip>
+#include <stdlib.h>
+#include <sstream>
+using namespace std;
+
+struct Block {
+    unsigned int level;
+    string count;
+};
+
+void pushBlocks(vector<Block> &blocks, unsigned level, const string& s) {
+    auto it = s.rbegin();
+    while (*it == '0') it++;
+    if (it != s.rend()) blocks.push_back({level, string(it, s.rend())});
+}
+
+int main() {
+    string l, r;
+    vector<Block> blocks;
+    cin >> l >> r;
+    
+    if (l == r) {
+        blocks.push_back({ 0, "1" });
+    }
+    else {
+        // skip matching start
+        if (l.length() == r.length()) {
+            int i = 0;
+            while (l[i] == r[i]) i++;
+            l = l.substr(i);
+            r = r.substr(i);
+        }
+        // reverse strings for easier indexing from lowest digit
+        reverse(l.begin(), l.end());
+        reverse(r.begin(), r.end());
+    
+        const int llen = l.length();
+        const int rlen = r.length();
+
+        int blockEnd = 1;
+        unsigned int level = 0;
+        int carry = -1;
+        stringstream output;
+        
+        // blocks needed raise 'l' to next blockEnd
+        int i = 0;
+        for (; i < rlen; i++) {
+            if (i >= blockEnd) {
+                pushBlocks(blocks, level, output.str());
+                level++;
+                blockEnd *= 2;
+                output.str("");
+            }
+            if (blockEnd >= rlen) {
+                break;
+            }
+            int x = i < llen ? l[i] - '0' : 0;
+            int diff = (10 - x - carry) % 10;
+            carry = x + carry + diff >= 10;
+            output << (char)('0' + diff);
+        }
+        // top block (simply 'r' - 'l')
+        for (int j = i; j < rlen; j++) {
+            int x = j < llen ? l[j] - '0' : 0;
+            int y = r[j] - '0';
+            int diff = (10 + y - x - carry) % 10;
+            carry = y - x - carry < 0;
+            output << (char)('0' + diff);
+        }
+        pushBlocks(blocks, level, output.str());
+        level--;
+        blockEnd /= 2;
+        output.str("");
+        
+        // add remaining 'r' blocks
+        while (blockEnd > 1) {
+            pushBlocks(blocks, level, r.substr(blockEnd / 2, blockEnd / 2));
+            level--;
+            blockEnd /= 2;
+        }
+        pushBlocks(blocks, level, r.substr(0, 1));
+    }
+    
+    // print result
+    cout << blocks.size() << endl;
+    for (auto iter = blocks.begin(); iter != blocks.end(); iter++) {
+        cout << iter->level << " " << iter->count << endl;
+    }
+
+    return 0;
+}
