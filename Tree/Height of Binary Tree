@@ -1,0 +1,43 @@
+int levelOrderTraversal(Node *root,int level)
+    {
+        queue<Node*> q;
+        
+        q.push(root);
+        q.push(NULL);
+        
+        while(!q.empty())
+        {
+            Node *temp = q.front();
+            q.pop();
+            
+            if(temp==NULL )
+            {
+                if(!q.empty())
+                {
+                  q.push(NULL);
+                }
+                level++;
+            }
+            else
+            {
+                // cout<<temp->data<<" ";
+                
+                if(temp->left!=NULL)
+                {
+                   q.push(temp->left);
+                }
+                if(temp->right!=NULL)
+                {
+                   q.push(temp->right);
+                }
+                
+            }
+        }
+        return level-1;
+    }
+    int height(Node* root) {
+        // Write your code here.
+      return  levelOrderTraversal(root,0);
+    }
+
+}; //End of Solution
