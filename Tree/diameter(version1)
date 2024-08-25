@@ -1,0 +1,144 @@
+#include<iostream>
+#include<queue>
+using namespace std;
+
+class binary_tree
+{
+  public: 
+   int data;
+   binary_tree *left;
+   binary_tree *right;
+
+   binary_tree(int data)
+   {
+    this->data=data;
+    this->left=NULL;
+    this->right=NULL;
+   }
+
+};
+
+binary_tree *buildTreLevelOrderTraversal(binary_tree* &root)
+{
+  queue<binary_tree*> q;
+  cout<<"Enter data for root node"<<endl;
+  int data;
+  cin>>data;
+
+  root = new binary_tree(data);
+  q.push(root);
+
+  while(!q.empty())
+  {
+    binary_tree *temp = q.front();
+    q.pop();
+
+    int left_data;
+    cout<<"Enter the left child of "<<temp->data<<endl;
+    cin>>left_data;
+
+    if(left_data!=-1)
+    {
+      temp->left = new binary_tree(left_data);
+      q.push(temp->left);
+    }
+
+    cout<<"Enter the right child of "<<temp->data<<endl;
+    int right_data;
+
+    cin>>right_data;
+    if(right_data!=-1)
+    {
+      temp->right = new binary_tree(right_data);
+      q.push(temp->right);
+    }
+  }
+}
+
+int height(binary_tree *temp)
+{
+  if(temp==NULL)
+  {
+    return  0;
+  }
+  int left = height(temp->left);
+  int right = height(temp->right);
+
+  return max(left,right) +1;
+}
+
+int diameter(binary_tree *root)
+{
+  if(root==NULL)
+  {
+    return 0;
+  }
+
+  int op1 = diameter(root->left);
+  int op2 = diameter(root->right);
+  int op3 = height(root->left)+height(root->right)+1;
+
+  int ans = max(op1,max(op2,op3));
+
+  return ans;
+}
+
+void levelOrederTraversal(binary_tree *root)
+{
+  queue<binary_tree*> q;
+  q.push(root);
+  q.push(NULL);
+
+  while(!q.empty())
+  {
+    binary_tree *temp = q.front();
+    q.pop();
+    if(temp==NULL)
+    {
+      cout<<endl;
+      if(!q.empty())
+      {
+        q.push(NULL);
+      }
+    }
+    else{
+      cout<<temp->data<<" ";
+
+      if(temp->left!=NULL)
+      {
+        q.push(temp->left);
+      }
+      
+      if(temp->right!=NULL)
+      {
+        q.push(temp->right);
+      }
+    }
+  }
+}
+
+void inorder_traversal(binary_tree *root)
+{
+  if(root!=NULL)
+  {
+    inorder_traversal(root->left);
+    cout<<root->data<<" ";
+    inorder_traversal(root->right);
+
+  }
+}
+
+int main()
+{
+  binary_tree *root = NULL;
+  cout<<" Traversal of tree is :"<<endl;
+  buildTreLevelOrderTraversal(root);
+  levelOrederTraversal(root);
+  cout<<"Inorder Traversal of tree is :"<<endl;
+  inorder_traversal(root);
+  cout<<"\nHeight of the tree is "<<height(root)<<endl;
+  cout<<"Diameter of the tree is "<<diameter(root)<<endl;
+
+
+  return 0;
+}
